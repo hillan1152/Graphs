@@ -83,20 +83,22 @@ class Graph:
         """
         # visited is a set
         visited = set()
-        print("Starting vertex", starting_vertex)
-        if starting_vertex in visited:
-            return visited
-        else:
-            for neighbor in self.get_neighbors(starting_vertex):
-                print('YOOOOOOO ', neighbor)
-                if neighbor not in visited:
-                    print("neighbor ", neighbor)
-                    visited.add(neighbor)
-                    print("VISITED ", visited)
-                    return self.dft_recursive(neighbor)
-                else:
-                    print("made it here", visited)
-                    return visited
+        # add first number to the set
+        visited.add(starting_vertex)
+        # Helper for number
+        def dfs(number):   
+            # print out first number   
+            print(number) 
+            # find next vertices in neighbors, add them to the visited list, and recursively call them. 
+            for next_vertex in self.get_neighbors(number):
+                if next_vertex not in visited:
+                    visited.add(next_vertex)
+                    dfs(next_vertex)
+        
+        dfs(starting_vertex)
+        
+
+
 
 
     def bfs(self, starting_vertex, destination_vertex):
@@ -105,7 +107,43 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        # similar to BFT, but we want to check if the children have been seen BEFORE we add them to the queue
+
+        # GOAL
+        # create lists of traversals to a given route
+        # if the route ends in the destination vertex, then return the shortest length list.
+
+
+
+        # from MIT, parent pointers create shortest paths
+        q = Queue()
+        # Q's goal is to create a a list of vertices, finds the 
+        q.enqueue([starting_vertex])
+
+        while q.size() > 0:
+            path = q.dequeue()
+            print("PATH", path)
+            node = path[-1]
+            print("CURRENT NODE --> ", node)
+            print(" ")
+            print("queue", q.queue)
+            if node == destination_vertex:
+                return path
+            
+            for next_vert in self.get_neighbors(node):
+                new_path = list(path)
+                new_path.append(next_vert)
+                q.enqueue(new_path)
+
+
+
+
+
+
+
+                
+
+    
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -113,6 +151,9 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
+
+
+
         pass  # TODO
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
@@ -150,7 +191,7 @@ if __name__ == '__main__':
     Should print:
         {1: {2}, 2: {3, 4}, 3: {5}, 4: {6, 7}, 5: {3}, 6: {3}, 7: {1, 6}}
     '''
-    print(graph.vertices)
+    # print(graph.vertices)
     # print(graph.get_neighbors(4))
 
     '''
@@ -168,7 +209,7 @@ if __name__ == '__main__':
         1, 2, 4, 3, 7, 6, 5
         1, 2, 4, 3, 7, 5, 6
     '''
-    graph.bft(1)
+    # graph.bft(1)
 
     '''
     Valid DFT paths:
@@ -178,13 +219,13 @@ if __name__ == '__main__':
         1, 2, 4, 6, 3, 5, 7
     '''
     # graph.dft(1)
-    graph.dft_recursive(1)
+    # graph.dft_recursive(1)
 
     # '''
     # Valid BFS path:
     #     [1, 2, 4, 6]
     # '''
-    # print(graph.bfs(1, 6))
+    print(graph.bfs(1, 6))
 
     # '''
     # Valid DFS paths:
