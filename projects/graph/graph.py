@@ -68,7 +68,7 @@ class Graph:
             pop = s.pop()
 
             if pop not in visited:
-                print("DFT ", pop)
+                print(pop)
                 visited.add(pop)
                 for next_vert in self.get_neighbors(pop):
                     s.push(next_vert)
@@ -96,6 +96,21 @@ class Graph:
                     dfs(next_vertex)
         
         dfs(starting_vertex)
+
+        # CLASS
+    # def dft_recursive(self, starting_vertex, visited=None):
+
+    #     print(starting_vertex)
+        
+    #     if visited is None:
+    #         visited = set()
+        
+    #     visited.add(starting_vertex)
+
+    #     for next_vertex in self.vertices[starting_vertex]:
+    #         if next_vertex not in visited:
+    #             self.dft_recursive(next_vertex, visited)
+
         
 
 
@@ -136,27 +151,29 @@ class Graph:
                 q.enqueue(new_path)
 
 
-
-
-
-
-
-                
-
-    
-
     def dfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
         depth-first order.
         """
+        # still want the list 
+        s = Stack()
+        s.push([starting_vertex])
 
+        while s.size() > 0:
+            pop = s.pop()
+            last_digit = pop[-1]
 
+            if last_digit == destination_vertex:
+                return pop
+            for next_vert in self.get_neighbors(last_digit):
+                new_path = list(pop)
+                new_path.append(next_vert)
+                s.push(new_path)
+        
 
-        pass  # TODO
-
-    def dfs_recursive(self, starting_vertex, destination_vertex):
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited=None, path=None):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -164,7 +181,44 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+
+        print(starting_vertex)
+        
+        if visited is None:
+            visited = set()
+        if path is None:
+            path = list()
+
+        # creates an entirely new list, creates a copy
+        path = path + [starting_vertex]
+        # path.append... adds to existing list
+        
+        visited.add(starting_vertex)
+
+        if starting_vertex == destination_vertex:
+            return path
+
+        for next_vertex in self.vertices[starting_vertex]:
+            if next_vertex not in visited:
+                new_path = self.dfs_recursive(next_vertex, destination_vertex, visited, path)
+                if new_path:
+                    return new_path
+        return None
+        # s = Stack()
+        # s.push([starting_vertex])
+        # pop = s.pop()
+        # last_digit = pop[-1]
+    
+        # if last_digit == destination_vertex:
+        #     return pop
+        # if last_digit not in self.get_neighbors(last_digit):
+        #     new_path = list(pop)
+        #     new_path.append(self.get_neighbors(last_digit))
+        #     self.dfs_recursive(new_path, destination_vertex)
+
+        pass
+        
+
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
@@ -209,7 +263,7 @@ if __name__ == '__main__':
         1, 2, 4, 3, 7, 6, 5
         1, 2, 4, 3, 7, 5, 6
     '''
-    # graph.bft(1)
+    graph.bft(1)
 
     '''
     Valid DFT paths:
@@ -219,13 +273,13 @@ if __name__ == '__main__':
         1, 2, 4, 6, 3, 5, 7
     '''
     # graph.dft(1)
-    # graph.dft_recursive(1)
+    graph.dft_recursive(1)
 
     # '''
     # Valid BFS path:
     #     [1, 2, 4, 6]
     # '''
-    print(graph.bfs(1, 6))
+    # print(graph.bfs(1, 6))
 
     # '''
     # Valid DFS paths:
