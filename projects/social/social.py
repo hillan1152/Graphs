@@ -1,3 +1,6 @@
+import random
+from util import Queue
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -45,8 +48,35 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
-
+        for i in range(0, num_users):
+            self.add_user(f"user {i}")
         # Create friendships
+        
+        # Generate all possible friendship Combos
+        possible_friendships= []
+        
+        # Avoid duplicates by ensuring the first number is smaller than the second
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
+        
+        # shuffle the possible friendships
+        random.shuffle(possible_friendships)
+
+        # Create friendships for the first X pairs of the list
+        # X is determined by the formula: (avg_friendships * num_users) // 2
+        # Need to divide by 2 since each add_friendship() creates 2 friendships
+        for i in range(avg_friendships * num_users // 2):
+            friendship = possible_friendships[i]
+            self.add_friendship(friendship[0], friendship[1])
+
+    # Used in get_all_social_paths to get user neighbors/friendships
+    def connections(self, user_id):
+        """
+        Get all neighbors (edges) of a vertex.
+        """
+        return self.friendships[user_id]
+
 
     def get_all_social_paths(self, user_id):
         """
@@ -59,6 +89,29 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        
+        # Add initial user to list
+        # key = friends id, value = path
+        # visited[user_id] = list(self.connections(user_id))
+
+        # add queue, add starting 
+        q = Queue()
+        q.enqueue([user_id])
+
+         
+        while q.size() > 0:
+            v = q.dequeue()
+            node = v[-1]
+
+            if node not in visited:
+                neighbors = self.connections(node)
+
+                for neighbor in neighbors:
+                    new_path = list(v)
+                    new_path.append(neighbor)
+                    q.enqueue(new_path)
+                visited[node] = v
+
         return visited
 
 

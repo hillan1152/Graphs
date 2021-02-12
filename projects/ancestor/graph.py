@@ -13,17 +13,16 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        self.vertices[vertex_id] = set()
+        if vertex_id not in self.vertices:
+            self.vertices[vertex_id] = set()
 
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        if v1 in self.vertices and v2 in self.vertices:
-            self.vertices[v1].add(v2)
-        else:
-            raise IndexError("Vertex does not exist in graph.")
+        self.vertices[v1].add(v2)
+
 
     def get_neighbors(self, vertex_id):
         """
@@ -151,72 +150,27 @@ class Graph:
                 q.enqueue(new_path)
 
 
-    def dfs(self, starting_vertex, destination_vertex):
+    def dfs(self, starting_vertex):
         """
         Return a list containing a path from
-        starting_vertex to destination_vertex in
-        depth-first order.
+        starting_vertex and find the longest list. 
         """
         # still want the list 
         s = Stack()
         s.push([starting_vertex])
-
+        master_list = []
         while s.size() > 0:
-            pop = s.pop()
-            last_digit = pop[-1]
+            curr_list = s.pop()
+            last_digit = curr_list[-1]
 
-            if last_digit == destination_vertex:
-                return pop
             for next_vert in self.get_neighbors(last_digit):
-                new_path = list(pop)
+                new_path = list(curr_list)
                 new_path.append(next_vert)
                 s.push(new_path)
+                master_list.append(new_path)
         
+        return master_list
 
-    def dfs_recursive(self, starting_vertex, destination_vertex, visited=None, path=None):
-        """
-        Return a list containing a path from
-        starting_vertex to destination_vertex in
-        depth-first order.
-
-        This should be done using recursion.
-        """
-
-        print(starting_vertex)
-        
-        if visited is None:
-            visited = set()
-        if path is None:
-            path = list()
-
-        # creates an entirely new list, creates a copy
-        path = path + [starting_vertex]
-        # path.append... adds to existing list
-        
-        visited.add(starting_vertex)
-
-        if starting_vertex == destination_vertex:
-            return path
-
-        for next_vertex in self.vertices[starting_vertex]:
-            if next_vertex not in visited:
-                new_path = self.dfs_recursive(next_vertex, destination_vertex, visited, path)
-                if new_path:
-                    return new_path
-        return None
-        # s = Stack()
-        # s.push([starting_vertex])
-        # pop = s.pop()
-        # last_digit = pop[-1]
-    
-        # if last_digit == destination_vertex:
-        #     return pop
-        # if last_digit not in self.get_neighbors(last_digit):
-        #     new_path = list(pop)
-        #     new_path.append(self.get_neighbors(last_digit))
-        #     self.dfs_recursive(new_path, destination_vertex)
-
-        pass
         
 
 
